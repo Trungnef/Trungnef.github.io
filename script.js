@@ -90,7 +90,7 @@ const galaxyParameters = {
 };
 
 const defaultHeartImages = Array.from(
-  { length: 2 },
+  { length: 4 },
   (_, i) => `images/img${i + 1}.jpg`
 );
 
@@ -440,41 +440,88 @@ starField.renderOrder = 999;
 scene.add(starField);
 
 // =================================================================
-// TẠO CÁC HÀNH TINH NHỎ Ở XA
+// TẠO CÁC HÀNH TINH NHỎ Ở XA VỚI HIỆU ỨNG PHÁT SÁNG VÀ CHUYỂN ĐỘNG
 // =================================================================
 const distantPlanets = new THREE.Group();
 
+function createGlowSprite(color, size = 32, opacity = 0.5) {
+  const canvas = document.createElement("canvas");
+  canvas.width = canvas.height = size;
+  const ctx = canvas.getContext("2d");
+  const gradient = ctx.createRadialGradient(
+    size / 2,
+    size / 2,
+    0,
+    size / 2,
+    size / 2,
+    size / 2
+  );
+  gradient.addColorStop(0, color);
+  gradient.addColorStop(1, "rgba(0,0,0,0)");
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0, 0, size, size);
+  const texture = new THREE.CanvasTexture(canvas);
+  const material = new THREE.SpriteMaterial({
+    map: texture,
+    transparent: true,
+    opacity: opacity,
+    depthWrite: false,
+    blending: THREE.AdditiveBlending,
+  });
+  return new THREE.Sprite(material);
+}
+
 function createDistantPlanet() {
   // Kích thước ngẫu nhiên
-  const size = 0.5 + Math.random() * 2;
-  const geometry = new THREE.SphereGeometry(size, 16, 16);
+  const size = 0.5 + Math.random() * 2.5;
+  const geometry = new THREE.SphereGeometry(size, 24, 24);
 
   // Màu sắc ngẫu nhiên
+  const hue = Math.random();
   const color = new THREE.Color();
-  color.setHSL(Math.random(), 0.7, 0.5 + Math.random() * 0.2);
-  const material = new THREE.MeshBasicMaterial({ color: color });
+  color.setHSL(hue, 0.7 + Math.random() * 0.3, 0.5 + Math.random() * 0.3);
+  const emissive = color.clone().lerp(new THREE.Color(0xffffff), 0.3 + Math.random() * 0.5);
+  const material = new THREE.MeshStandardMaterial({
+    color: color,
+    emissive: emissive,
+    emissiveIntensity: 0.7 + Math.random() * 0.7,
+    roughness: 0.3 + Math.random() * 0.5,
+    metalness: 0.1 + Math.random() * 0.3,
+  });
 
   const planet = new THREE.Mesh(geometry, material);
 
   // Vị trí ngẫu nhiên ở khoảng cách xa
-  const distance = 250 + Math.random() * 750; // Khoảng cách từ 250 đến 1000
+  const distance = 300 + Math.random() * 1200;
   const angle = Math.random() * Math.PI * 2;
-  // Phân bố ngẫu nhiên theo chiều dọc
-  const height = (Math.random() - 0.5) * 500;
-
+  const height = (Math.random() - 0.5) * 700;
   planet.position.set(
     Math.cos(angle) * distance,
     height,
     Math.sin(angle) * distance
   );
-  
-  // Lưu lại màu gốc để làm hiệu ứng lấp lánh
-  planet.userData.originalColor = color.clone();
+
+  // Hiệu ứng glow
+  const glowColor = `rgba(${Math.floor(color.r*255)},${Math.floor(color.g*255)},${Math.floor(color.b*255)},0.7)`;
+  const glow = createGlowSprite(glowColor, Math.floor(size*32+32), 0.35 + Math.random()*0.3);
+  glow.scale.set(size*3, size*3, 1);
+  planet.add(glow);
+
+  // Lưu lại thông tin để animate
+  planet.userData = {
+    baseColor: color.clone(),
+    baseEmissive: emissive.clone(),
+    baseY: planet.position.y,
+    spinSpeed: 0.001 + Math.random()*0.003,
+    bobSpeed: 0.2 + Math.random()*0.3,
+    bobHeight: 10 + Math.random()*20,
+    glow: glow,
+  };
 
   return planet;
 }
 
-const numDistantPlanets = 150;
+const numDistantPlanets = 120;
 for (let i = 0; i < numDistantPlanets; i++) {
   distantPlanets.add(createDistantPlanet());
 }
@@ -1094,11 +1141,25 @@ function animate() {
   requestAnimationFrame(animate);
   const time = performance.now() * 0.001;
 
-  // Thêm hiệu ứng lấp lánh cho các hành tinh ở xa
+  // Hiệu ứng chuyển động nhẹ cho dải ngân hà
+  galaxyClouds.children.forEach((cloud, idx) => {
+    cloud.rotation.y = Math.sin(time*0.07 + idx)*0.08 + idx*0.2;
+    cloud.material.opacity = cloud.material.opacity * (0.98 + Math.sin(time*0.2+idx)*0.02);
+  });
+
+  // Hiệu ứng lấp lánh, chuyển động cho các hành tinh xa
   distantPlanets.children.forEach(planet => {
-    const pulse = Math.sin(time * (0.5 + Math.random()) + planet.id); // Tần số ngẫu nhiên cho mỗi hành tinh
-    const brightness = 0.7 + (pulse + 1) * 0.15; // Thay đổi độ sáng từ 0.7 đến 1.0
-    planet.material.color.copy(planet.userData.originalColor).multiplyScalar(brightness);
+    // Quay nhẹ
+    planet.rotation.y += planet.userData.spinSpeed;
+    // Lấp lánh
+    const pulse = 0.7 + Math.sin(time * (0.7 + planet.userData.spinSpeed*100) + planet.id) * 0.3;
+    planet.material.emissive.copy(planet.userData.baseEmissive).multiplyScalar(pulse);
+    // Bobbing
+    planet.position.y = planet.userData.baseY + Math.sin(time * planet.userData.bobSpeed + planet.id) * planet.userData.bobHeight;
+    // Glow opacity
+    if (planet.userData.glow) {
+      planet.userData.glow.material.opacity = 0.25 + Math.abs(Math.sin(time*0.7 + planet.id))*0.35;
+    }
   });
 
   animateHintIcon(time);
@@ -1264,7 +1325,7 @@ function createHintText() {
   canvas.width = canvas.height = canvasSize;
   const context = canvas.getContext("2d");
   const fontSize = 50;
-  const text = "Happy Girlfriend Day!";
+  const text = "Anh yêu Trần Nguyễn Khánh Ngọc!";
   context.font = `bold ${fontSize}px Arial, sans-serif`;
   context.textAlign = "center";
   context.textBaseline = "middle";
@@ -1465,3 +1526,54 @@ window.addEventListener("resize", checkOrientation);
 window.addEventListener("orientationchange", () => {
   setTimeout(checkOrientation, 200);
 });
+
+// =================================================================
+// DẢI NGÂN HÀ BAO LA (GALAXY CLOUDS)
+// =================================================================
+const galaxyClouds = new THREE.Group();
+function createGalaxyCloud({count, radius, arms, color1, color2, opacity, spread, twist}) {
+  const positions = new Float32Array(count * 3);
+  const colors = new Float32Array(count * 3);
+  for (let i = 0; i < count; i++) {
+    const arm = i % arms;
+    const angle = (arm / arms) * Math.PI * 2 + Math.random() * twist;
+    const r = radius * (0.7 + Math.random() * 0.3);
+    const x = Math.cos(angle) * r + (Math.random()-0.5)*spread;
+    const y = (Math.random()-0.5)*spread*0.7;
+    const z = Math.sin(angle) * r + (Math.random()-0.5)*spread;
+    positions[i*3] = x;
+    positions[i*3+1] = y;
+    positions[i*3+2] = z;
+    // Màu chuyển dần từ color1 đến color2
+    const t = r/radius;
+    const c = color1.clone().lerp(color2, t);
+    colors[i*3] = c.r;
+    colors[i*3+1] = c.g;
+    colors[i*3+2] = c.b;
+  }
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+  geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+  const material = new THREE.PointsMaterial({
+    size: 8 + Math.random()*8,
+    vertexColors: true,
+    transparent: true,
+    opacity: opacity,
+    blending: THREE.AdditiveBlending,
+    depthWrite: false,
+  });
+  const points = new THREE.Points(geometry, material);
+  return points;
+}
+
+const cloudConfigs = [
+  {count: 1200, radius: 600, arms: 5, color1: new THREE.Color(0x8e44ad), color2: new THREE.Color(0x3498db), opacity: 0.18, spread: 180, twist: 0.7},
+  {count: 900, radius: 900, arms: 4, color1: new THREE.Color(0xf1c40f), color2: new THREE.Color(0xe67e22), opacity: 0.13, spread: 220, twist: 1.2},
+  {count: 700, radius: 1200, arms: 3, color1: new THREE.Color(0xff66ff), color2: new THREE.Color(0x66ffff), opacity: 0.09, spread: 320, twist: 2.2},
+  {count: 600, radius: 1500, arms: 2, color1: new THREE.Color(0x48b8b8), color2: new THREE.Color(0xffffff), opacity: 0.07, spread: 400, twist: 3.2},
+];
+cloudConfigs.forEach(cfg => {
+  galaxyClouds.add(createGalaxyCloud(cfg));
+});
+scene.add(galaxyClouds);
+// =================================================================
