@@ -80,19 +80,25 @@
           onReady: (event) => {
             const btn = document.getElementById('musicButton');
             btn.disabled = false;
-            btn.innerText = "🎵"; // Trạng thái ban đầu là 'sẵn sàng phát'
+            btn.innerText = "🎵";
             
             // Cố gắng phát nhạc tự động
             event.target.playVideo();
+
+            // Sau một khoảng trễ ngắn, kiểm tra xem nhạc có thực sự đang phát không
+            setTimeout(() => {
+              if (player.getPlayerState() !== YT.PlayerState.PLAYING) {
+                // Nếu không, có thể do trình duyệt chặn, hãy hiện nút
+                btn.style.display = 'block';
+              }
+            }, 1000);
           },
           onStateChange: (event) => {
-            const btn = document.getElementById('musicButton');
             if (event.data === YT.PlayerState.ENDED) {
               player.seekTo(startTime); // Quay lại thời điểm bắt đầu khi hết đoạn
             } else if (event.data === YT.PlayerState.PLAYING) {
-              btn.innerText = "💖"; // Đang phát, hiển thị icon 'tắt tiếng'
-            } else if (event.data === YT.PlayerState.PAUSED) {
-              btn.innerText = "🎵"; // Đang dừng, hiển thị icon 'bật nhạc'
+              // Khi nhạc bắt đầu phát (dù là tự động hay do người dùng click), ẩn nút đi
+              document.getElementById('musicButton').style.display = 'none';
             }
           }
         }
@@ -100,13 +106,8 @@
     };
 
     document.getElementById('musicButton').addEventListener('click', () => {
-      if (player && typeof player.getPlayerState === 'function') {
-        const playerState = player.getPlayerState();
-        if (playerState === YT.PlayerState.PLAYING) {
-          player.pauseVideo();
-        } else {
-          player.playVideo();
-        }
+      if (player) {
+        player.playVideo();
       }
     });
   </script>
