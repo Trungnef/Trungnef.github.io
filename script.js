@@ -1400,85 +1400,14 @@ if (container) {
   container.addEventListener("touchmove", preventDefault, { passive: false });
 }
 
-// --- Mobile Orientation Check and 3D Phone Animation ---
-
-let phoneScene, phoneCamera, phoneRenderer, phoneMesh;
-
-function initPhoneAnimation() {
-    const animationContainer = document.getElementById('phone-animation');
-    if (!animationContainer) return;
-
-    // Scene
-    phoneScene = new THREE.Scene();
-
-    // Camera
-    phoneCamera = new THREE.PerspectiveCamera(50, animationContainer.clientWidth / animationContainer.clientHeight, 0.1, 100);
-    phoneCamera.position.z = 10;
-
-    // Renderer
-    phoneRenderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-    phoneRenderer.setSize(animationContainer.clientWidth, animationContainer.clientHeight);
-    phoneRenderer.setPixelRatio(window.devicePixelRatio);
-    animationContainer.appendChild(phoneRenderer.domElement);
-
-    // Phone Model
-    const phoneGroup = new THREE.Group();
-    const caseGeometry = new THREE.BoxGeometry(3, 6, 0.4);
-    const caseMaterial = new THREE.MeshStandardMaterial({ color: 0x333333, roughness: 0.3 });
-    const phoneCase = new THREE.Mesh(caseGeometry, caseMaterial);
-    
-    const screenGeometry = new THREE.BoxGeometry(2.7, 5.7, 0.1);
-    const screenMaterial = new THREE.MeshStandardMaterial({ color: 0x000000, roughness: 0.1, metalness: 0.5 });
-    const phoneScreen = new THREE.Mesh(screenGeometry, screenMaterial);
-    phoneScreen.position.z = 0.21;
-
-    phoneGroup.add(phoneCase);
-    phoneGroup.add(phoneScreen);
-    
-    phoneMesh = phoneGroup;
-    phoneScene.add(phoneMesh);
-
-    // Light
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-    phoneScene.add(ambientLight);
-    const pointLight = new THREE.PointLight(0xffffff, 0.8);
-    pointLight.position.set(5, 10, 10);
-    phoneScene.add(pointLight);
-
-    animatePhone();
-}
-
-function animatePhone() {
-    if (!phoneRenderer) return;
-    requestAnimationFrame(animatePhone);
-
-    const time = performance.now() * 0.0005;
-    const rotation = (Math.sin(time) + 1) / 2; // from 0 to 1
-    phoneMesh.rotation.z = rotation * (Math.PI / 2); // Rotate from 0 to 90 degrees
-
-    phoneRenderer.render(phoneScene, phoneCamera);
-}
-
-
 function checkOrientation() {
-  const isMobile = /Mobi|Android/i.test(navigator.userAgent);
-  if (!isMobile) {
-    document.body.classList.remove("portrait-mode");
-    return;
-  }
+  const isMobilePortrait =
+    window.innerHeight > window.innerWidth && "ontouchstart" in window;
 
-  const isPortrait = window.innerHeight > window.innerWidth;
-
-  if (isPortrait) {
+  if (isMobilePortrait) {
     document.body.classList.add("portrait-mode");
-    if (!phoneRenderer) {
-        // Initialize animation only when needed
-        setTimeout(initPhoneAnimation, 100);
-    }
   } else {
     document.body.classList.remove("portrait-mode");
-    // Request fullscreen when switching to landscape
-    requestFullScreen();
   }
 }
 

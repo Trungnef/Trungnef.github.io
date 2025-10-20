@@ -36,10 +36,69 @@
     #musicButton:hover {
       background-color: #ffffff30;
     }
+    #rotate-notice {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #fff;
+      z-index: 9999;
+      display: none; /* initially hidden, shown in portrait mode */
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+    #rotate-notice p { font-size: 1.5em; color: #333; margin-top: 20px; }
+    .icon {
+      width: 100px;
+      height: 100px;
+      transform-style: preserve-3d;
+      animation: rotatePhone 2s infinite;
+    }
+    @keyframes rotatePhone {
+      0% { transform: rotateY(0deg); }
+      50% { transform: rotateY(90deg); }
+      100% { transform: rotateY(0deg); }
+    }
   </style>
 </head>
 
 <body>
+  <!-- Inserted rotate notice overlay and orientation detection script -->
+  <div id="rotate-notice" style="display:none;">
+    <div class="icon">
+      <!-- 3D phone icon simulation using SVG -->
+      <svg width="100" height="100" viewBox="0 0 24 24"><path fill="#333" d="M7 2C5.89 2 5 2.9 5 4v16c0 1.1.89 2 2 2h10c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2H7zM7 20V4h10v16H7z"/></svg>
+    </div>
+    <p>Please rotate your phone to landscape mode</p>
+  </div>
+  <script>
+  function toggleMainContent(visible) {
+    Array.from(document.body.children).forEach(function(el) {
+      if(el.id !== 'rotate-notice') {
+        el.style.display = visible ? '' : 'none';
+      }
+    });
+  }
+
+  function checkOrientation() {
+      if(window.innerHeight > window.innerWidth) {
+           document.getElementById('rotate-notice').style.display = 'flex';
+           toggleMainContent(false);
+      } else {
+           document.getElementById('rotate-notice').style.display = 'none';
+           toggleMainContent(true);
+      }
+  }
+
+  window.addEventListener('resize', checkOrientation);
+  // Ensure the check runs once DOM is fully loaded
+  document.addEventListener('DOMContentLoaded', checkOrientation);
+  </script>
+  <!-- End of orientation script -->
+
   <div id="container"></div>
 
   <div id="landscape-warning">
@@ -110,6 +169,21 @@
         player.playVideo();
       }
     });
+
+    // Handle device orientation for mobile
+    function handleOrientation(event) {
+      const { beta } = event;
+      const rotateNotice = document.getElementById('rotate-notice');
+      if (beta < 10) {
+        // If the phone is nearly flat, show the notice
+        rotateNotice.style.display = 'flex';
+      } else {
+        // Otherwise, hide it
+        rotateNotice.style.display = 'none';
+      }
+    }
+
+    window.addEventListener('deviceorientation', handleOrientation);
   </script>
 
   <script type="module" src="script.js"></script>
