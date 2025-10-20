@@ -17,7 +17,14 @@
   </script>
   <style>
     #player {
-      display: none;
+      width: 1px;
+      height: 1px;
+      opacity: 0;
+      pointer-events: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: -1;
     }
     #musicButton {
       position: fixed;
@@ -61,15 +68,16 @@
   <script src="https://www.youtube.com/iframe_api"></script>
   <script>
     let player;
-     const startTime = 227;
+    const startTime = 227;
     const endTime = 261;
+    let playerReady = false;
     window.onYouTubeIframeAPIReady = function() {
       player = new YT.Player('player', {
-        height: '0',
-        width: '0',
+        height: '1',
+        width: '1',
         videoId: 'E7Aif6vPMhU',
         playerVars: {
-          autoplay: 0, // Để là 0, chúng ta sẽ điều khiển bằng API
+          autoplay: 0,
           start: startTime,
           end: endTime,
           controls: 0,
@@ -78,26 +86,22 @@
         },
         events: {
           onReady: (event) => {
+            playerReady = true;
             const btn = document.getElementById('musicButton');
             btn.disabled = false;
             btn.innerText = "🎵";
-            
             // Cố gắng phát nhạc tự động
             event.target.playVideo();
-
-            // Sau một khoảng trễ ngắn, kiểm tra xem nhạc có thực sự đang phát không
             setTimeout(() => {
               if (player.getPlayerState() !== YT.PlayerState.PLAYING) {
-                // Nếu không, có thể do trình duyệt chặn, hãy hiện nút
                 btn.style.display = 'block';
               }
             }, 1000);
           },
           onStateChange: (event) => {
             if (event.data === YT.PlayerState.ENDED) {
-              player.seekTo(startTime); // Quay lại thời điểm bắt đầu khi hết đoạn
+              player.seekTo(startTime);
             } else if (event.data === YT.PlayerState.PLAYING) {
-              // Khi nhạc bắt đầu phát (dù là tự động hay do người dùng click), ẩn nút đi
               document.getElementById('musicButton').style.display = 'none';
             }
           }
@@ -106,21 +110,17 @@
     };
 
     document.getElementById('musicButton').addEventListener('click', () => {
-      if (player) {
+      if (playerReady && player) {
         player.playVideo();
       }
     });
 
-    // Thêm sự kiện tự động phát nhạc khi người dùng trỏ chuột vào trang
-    let triedAutoPlay = false;
-    function tryAutoPlayMusic() {
-      if (!triedAutoPlay && player) {
+    // Thêm sự kiện click cho toàn bộ trang để phát nhạc nếu chưa phát
+    document.body.addEventListener('click', () => {
+      if (playerReady && player && player.getPlayerState() !== YT.PlayerState.PLAYING) {
         player.playVideo();
-        triedAutoPlay = true;
       }
-    }
-    document.body.addEventListener('pointerenter', tryAutoPlayMusic, { once: true });
-    document.body.addEventListener('touchstart', tryAutoPlayMusic, { once: true });
+    });
   </script>
 
   <script type="module" src="script.js"></script>
