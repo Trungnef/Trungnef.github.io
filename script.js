@@ -695,9 +695,9 @@ scene.add(planet);
 
 //Ganti Deskripsi Planet
 const ringTexts = [
-  "Galaxy of love From Nanda Rizkiani", //untuk deskripsi planet layer 1
+  "Galaxy of love From Trunee", //untuk deskripsi planet layer 1
   "I love you", //untuk deskripsi planet layer 2
-  "♡Happy Birthday♡", //untuk deskripsi planet layer 3
+  "♡Happy Women Day♡", //untuk deskripsi planet layer 3
   "20/10/2025", //untuk deskripsi planet layer 4
   ...(window.dataCCD && window.dataCCD.data.ringTexts
     ? window.dataCCD.data.ringTexts
@@ -920,7 +920,7 @@ let galaxyAudio = null;
 
 function preloadGalaxyAudio() {
   const audioSources = [
-    "https://www.youtube.com/watch?v=d4OMqGKBl6E&list=RDd4OMqGKBl6E&start_radio=1&ab_channel=ARS",
+    "https://www.youtube.com/watch?v=E7Aif6vPMhU&list=RDE7Aif6vPMhU&start_radio=1",
   ];
 
   const randomIndex = Math.floor(Math.random() * audioSources.length);
