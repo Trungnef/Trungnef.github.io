@@ -90,7 +90,7 @@ const galaxyParameters = {
 };
 
 const defaultHeartImages = Array.from(
-  { length: 4 },
+  { length: 2 },
   (_, i) => `images/img${i + 1}.jpg`
 );
 
@@ -438,6 +438,48 @@ const starField = new THREE.Points(starGeometry, starMaterial);
 starField.name = "starfield";
 starField.renderOrder = 999;
 scene.add(starField);
+
+// =================================================================
+// TẠO CÁC HÀNH TINH NHỎ Ở XA
+// =================================================================
+const distantPlanets = new THREE.Group();
+
+function createDistantPlanet() {
+  // Kích thước ngẫu nhiên
+  const size = 0.5 + Math.random() * 2;
+  const geometry = new THREE.SphereGeometry(size, 16, 16);
+
+  // Màu sắc ngẫu nhiên
+  const color = new THREE.Color();
+  color.setHSL(Math.random(), 0.7, 0.5 + Math.random() * 0.2);
+  const material = new THREE.MeshBasicMaterial({ color: color });
+
+  const planet = new THREE.Mesh(geometry, material);
+
+  // Vị trí ngẫu nhiên ở khoảng cách xa
+  const distance = 250 + Math.random() * 750; // Khoảng cách từ 250 đến 1000
+  const angle = Math.random() * Math.PI * 2;
+  // Phân bố ngẫu nhiên theo chiều dọc
+  const height = (Math.random() - 0.5) * 500;
+
+  planet.position.set(
+    Math.cos(angle) * distance,
+    height,
+    Math.sin(angle) * distance
+  );
+  
+  // Lưu lại màu gốc để làm hiệu ứng lấp lánh
+  planet.userData.originalColor = color.clone();
+
+  return planet;
+}
+
+const numDistantPlanets = 150;
+for (let i = 0; i < numDistantPlanets; i++) {
+  distantPlanets.add(createDistantPlanet());
+}
+scene.add(distantPlanets);
+// =================================================================
 
 let shootingStars = [];
 
@@ -920,7 +962,7 @@ let galaxyAudio = null;
 
 function preloadGalaxyAudio() {
   const audioSources = [
-    "https://www.youtube.com/watch?v=E7Aif6vPMhU&list=RDE7Aif6vPMhU&start_radio=1&ab_channel=ARS",
+    "https://www.youtube.com/watch?v=E7Aif6vPMhU&list=RDE7Aif6vPMhU&start_radio=1",
   ];
 
   const randomIndex = Math.floor(Math.random() * audioSources.length);
@@ -1051,6 +1093,13 @@ function animateHintIcon(time) {
 function animate() {
   requestAnimationFrame(animate);
   const time = performance.now() * 0.001;
+
+  // Thêm hiệu ứng lấp lánh cho các hành tinh ở xa
+  distantPlanets.children.forEach(planet => {
+    const pulse = Math.sin(time * (0.5 + Math.random()) + planet.id); // Tần số ngẫu nhiên cho mỗi hành tinh
+    const brightness = 0.7 + (pulse + 1) * 0.15; // Thay đổi độ sáng từ 0.7 đến 1.0
+    planet.material.color.copy(planet.userData.originalColor).multiplyScalar(brightness);
+  });
 
   animateHintIcon(time);
 
@@ -1215,7 +1264,7 @@ function createHintText() {
   canvas.width = canvas.height = canvasSize;
   const context = canvas.getContext("2d");
   const fontSize = 50;
-  const text = "Happy Ngọc Day!";
+  const text = "Happy Girlfriend Day!";
   context.font = `bold ${fontSize}px Arial, sans-serif`;
   context.textAlign = "center";
   context.textBaseline = "middle";

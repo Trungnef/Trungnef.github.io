@@ -110,6 +110,17 @@
         player.playVideo();
       }
     });
+
+    // Thêm sự kiện tự động phát nhạc khi người dùng trỏ chuột vào trang
+    let triedAutoPlay = false;
+    function tryAutoPlayMusic() {
+      if (!triedAutoPlay && player) {
+        player.playVideo();
+        triedAutoPlay = true;
+      }
+    }
+    document.body.addEventListener('pointerenter', tryAutoPlayMusic, { once: true });
+    document.body.addEventListener('touchstart', tryAutoPlayMusic, { once: true });
   </script>
 
   <script type="module" src="script.js"></script>
