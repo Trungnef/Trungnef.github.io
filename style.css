@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 html, body {
   width: 100vw;
   height: 100vh;
@@ -228,7 +227,7 @@ body:not(.landscape-warning-active) #container canvas {
   20% { transform: rotate(18deg); }
   40% { transform: rotate(-18deg); }
   100% { transform: rotate(-18deg); }
-=======
+}
 html, body {
   width: 100vw;
   height: 100vh;
@@ -437,5 +436,4 @@ body:not(.landscape-warning-active) #container canvas {
   20% { transform: rotate(18deg); }
   40% { transform: rotate(-18deg); }
   100% { transform: rotate(-18deg); }
->>>>>>> 9502ce0db30f9420a500a663222084659d2848f2
 } 

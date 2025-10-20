@@ -54,15 +54,28 @@
   <div id="dark-overlay"></div>
   <div id="info"></div>
 <h1 style="position: fixed; bottom: 10px; right: 10px; font-size: 18px; font-family: Arial, sans-serif; color: white; background: rgba(0, 0, 0, 0.4); padding: 6px 12px; border-radius: 8px; z-index: 9999;">
- bisa di zoom. kalo sudah selesai buka ini <a href ="https://himitsuhito.github.io/Hari-ulang-tahun/">Trune</a>
+<a href ="/">Trune</a>
 </h1>
   <button id="musicButton" disabled>🎵</button>
   <div id="player"></div>
-  <script src="https://www.youtube.com/iframe_api"></script>
-  <script>
+    <script>
     let player;
-     const startTime = 227;
+    const startTime = 227;
     const endTime = 261;
+
+    // Hàm cập nhật giao diện nút bấm
+    function updateMusicButtonUI() {
+      const btn = document.getElementById('musicButton');
+      if (!player || typeof player.getPlayerState !== 'function') return;
+
+      const playerState = player.getPlayerState();
+      if (playerState === YT.PlayerState.PLAYING) {
+        btn.innerText = "💖"; // Biểu tượng tạm dừng
+      } else {
+        btn.innerText = "🎵"; // Biểu tượng phát nhạc
+      }
+    }
+
     window.onYouTubeIframeAPIReady = function() {
       player = new YT.Player('player', {
         height: '0',
@@ -80,34 +93,31 @@
           onReady: (event) => {
             const btn = document.getElementById('musicButton');
             btn.disabled = false;
-            btn.innerText = "🎵";
+            btn.style.display = 'block'; // Đảm bảo nút luôn hiển thị
+            updateMusicButtonUI();
             
             // Cố gắng phát nhạc tự động
             event.target.playVideo();
-
-            // Sau một khoảng trễ ngắn, kiểm tra xem nhạc có thực sự đang phát không
-            setTimeout(() => {
-              if (player.getPlayerState() !== YT.PlayerState.PLAYING) {
-                // Nếu không, có thể do trình duyệt chặn, hãy hiện nút
-                btn.style.display = 'block';
-              }
-            }, 1000);
           },
           onStateChange: (event) => {
             if (event.data === YT.PlayerState.ENDED) {
               player.seekTo(startTime); // Quay lại thời điểm bắt đầu khi hết đoạn
-            } else if (event.data === YT.PlayerState.PLAYING) {
-              // Khi nhạc bắt đầu phát (dù là tự động hay do người dùng click), ẩn nút đi
-              document.getElementById('musicButton').style.display = 'none';
             }
+            // Cập nhật biểu tượng nút mỗi khi trạng thái thay đổi
+            updateMusicButtonUI();
           }
         }
       });
     };
 
     document.getElementById('musicButton').addEventListener('click', () => {
-      if (player) {
-        player.playVideo();
+      if (player && typeof player.getPlayerState === 'function') {
+        const playerState = player.getPlayerState();
+        if (playerState === YT.PlayerState.PLAYING) {
+          player.pauseVideo();
+        } else {
+          player.playVideo();
+        }
       }
     });
   </script>

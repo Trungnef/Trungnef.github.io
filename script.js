@@ -90,7 +90,7 @@ const galaxyParameters = {
 };
 
 const defaultHeartImages = Array.from(
-  { length: 2 },
+  { length: 4 },
   (_, i) => `images/img${i + 1}.jpg`
 );
 
@@ -1215,7 +1215,7 @@ function createHintText() {
   canvas.width = canvas.height = canvasSize;
   const context = canvas.getContext("2d");
   const fontSize = 50;
-  const text = "Happy Girlfriend Day!";
+  const text = "Happy Ngọc Day!";
   context.font = `bold ${fontSize}px Arial, sans-serif`;
   context.textAlign = "center";
   context.textBaseline = "middle";
