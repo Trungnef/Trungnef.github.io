@@ -1215,7 +1215,7 @@ function createHintText() {
   canvas.width = canvas.height = canvasSize;
   const context = canvas.getContext("2d");
   const fontSize = 50;
-  const text = "Anh yêu em, Tran Ngoc ❤";
+  const text = "Anh yêu Trần Ngọc";
   context.font = `bold ${fontSize}px Arial, sans-serif`;
   context.textAlign = "center";
   context.textBaseline = "middle";
@@ -1344,6 +1344,9 @@ function requestFullScreen() {
 function onCanvasClick(event) {
   if (introStarted) return;
 
+  // Nếu đang ở chế độ portrait trên điện thoại, chặn tương tác cho đến khi người dùng xoay ngang
+  if (document.body.classList.contains("portrait-mode")) return;
+
   const rect = renderer.domElement.getBoundingClientRect();
   mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
   mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
@@ -1400,19 +1403,143 @@ if (container) {
   container.addEventListener("touchmove", preventDefault, { passive: false });
 }
 
-function checkOrientation() {
-  const isMobilePortrait =
-    window.innerHeight > window.innerWidth && "ontouchstart" in window;
+// Create a rotate-to-landscape overlay for mobile devices.
+function createRotateOverlay() {
+  if (document.getElementById("rotateOverlay")) return;
 
-  if (isMobilePortrait) {
+  const style = document.createElement("style");
+  style.id = "rotateOverlayStyles";
+  style.innerHTML = `
+    #rotateOverlay {
+      position: fixed;
+      inset: 0;
+      z-index: 100000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,0.85);
+      color: #fff;
+      text-align: center;
+      padding: 24px;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+    #rotateOverlay.hidden {
+      visibility: hidden;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .phone-frame {
+      width: 320px;
+      height: 640px;
+      border-radius: 28px;
+      border: 12px solid rgba(255,255,255,0.06);
+      box-shadow: 0 8px 40px rgba(0,0,0,0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 18px;
+      padding: 20px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    }
+    .rotate-icon {
+      width: 88px;
+      height: 88px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.12), rgba(255,255,255,0.02));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 44px;
+      transform-origin: center;
+      animation: rotateBounce 1.6s infinite ease-in-out;
+      color: #fff;
+    }
+    @keyframes rotateBounce {
+      0% { transform: rotate(0deg) translateY(0); }
+      40% { transform: rotate(90deg) translateY(-6px); }
+      70% { transform: rotate(90deg) translateY(-2px); }
+      100% { transform: rotate(0deg) translateY(0); }
+    }
+    #rotateOverlay h2 { margin: 0; font-size: 18px; font-weight: 700; }
+    #rotateOverlay p { margin: 0; font-size: 14px; color: rgba(255,255,255,0.88); }
+    #rotateOverlay .continue-btn {
+      margin-top: 6px;
+      padding: 10px 16px;
+      background: #ffffff10;
+      border: 1px solid rgba(255,255,255,0.12);
+      color: #fff;
+      border-radius: 10px;
+      cursor: pointer;
+      backdrop-filter: blur(6px);
+    }
+  `;
+  document.head.appendChild(style);
+
+  const overlay = document.createElement("div");
+  overlay.id = "rotateOverlay";
+
+  overlay.innerHTML = `
+    <div class="phone-frame">
+      <div class="rotate-icon">↻</div>
+      <h2>Vui lòng xoay ngang điện thoại</h2>
+      <p>Để trải nghiệm tốt nhất và hiển thị toàn màn hình.</p>
+      <button class="continue-btn" aria-label="Continue">Chạm để tiếp tục</button>
+    </div>
+  `;
+
+  document.body.appendChild(overlay);
+
+  const btn = overlay.querySelector(".continue-btn");
+  btn.addEventListener("click", (e) => {
+    // Hành động của nút phải do người dùng kích hoạt — dùng để bật toàn màn hình.
+    requestFullScreen();
+    // Nếu đã ở landscape, ẩn overlay
+    if (!document.body.classList.contains("portrait-mode")) {
+      hideRotateOverlay();
+    }
+  });
+}
+
+function showRotateOverlay() {
+  createRotateOverlay();
+  const overlay = document.getElementById("rotateOverlay");
+  if (overlay) overlay.classList.remove("hidden");
+}
+
+function hideRotateOverlay() {
+  const overlay = document.getElementById("rotateOverlay");
+  if (overlay) overlay.classList.add("hidden");
+}
+
+function updateOrientationUI() {
+  const isMobile = "ontouchstart" in window || navigator.maxTouchPoints > 0;
+  const isPortrait = window.innerHeight > window.innerWidth;
+
+  const containerEl = renderer && renderer.domElement ? renderer.domElement : null;
+
+  if (isMobile && isPortrait) {
     document.body.classList.add("portrait-mode");
+    // Hiển thị overlay yêu cầu xoay ngang
+    showRotateOverlay();
+    // Vô hiệu hóa các tương tác với canvas để tránh người dùng vô tình khởi động intro khi chưa xoay
+    if (containerEl) containerEl.style.pointerEvents = "none";
+    controls.enabled = false;
   } else {
     document.body.classList.remove("portrait-mode");
+    hideRotateOverlay();
+    if (containerEl) containerEl.style.pointerEvents = "auto";
+    // Không bật controls tự động nếu intro chưa bắt đầu — cho phép click vào hành tinh để bắt đầu
+    controls.enabled = !introStarted;
   }
 }
 
-window.addEventListener("DOMContentLoaded", checkOrientation);
-window.addEventListener("resize", checkOrientation);
+window.addEventListener("DOMContentLoaded", () => {
+  createRotateOverlay();
+  updateOrientationUI();
+});
+window.addEventListener("resize", updateOrientationUI);
 window.addEventListener("orientationchange", () => {
-  setTimeout(checkOrientation, 200);
+  setTimeout(updateOrientationUI, 200);
 });
