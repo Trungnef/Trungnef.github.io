@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Updated meta viewport tag for iOS full-screen support -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no">
   <title>Galaxy with Love</title>
   <link rel="stylesheet" href="style.css" />
   <script type="importmap">
@@ -62,15 +63,47 @@
       50% { transform: rotateY(90deg); }
       100% { transform: rotateY(0deg); }
     }
+    /* Added CSS for iOS full-screen mode */
+    html, body {
+      height: 100vh !important;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+
+    @media (orientation: landscape) {
+      html, body {
+          position: fixed;
+          width: 100vw;
+          height: 100vh;
+          margin: 0;
+          padding: 0;
+          overflow: hidden;
+      }
+    }
   </style>
+  <!-- Added meta tags for iOS full-screen mode -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 </head>
 
 <body>
   <!-- Inserted rotate notice overlay and orientation detection script -->
   <div id="rotate-notice" style="display:none;">
+    <!-- Updated icon with phone outline and horizontal arrow for rotation indication -->
     <div class="icon">
-      <!-- 3D phone icon simulation using SVG -->
-      <svg width="100" height="100" viewBox="0 0 24 24"><path fill="#333" d="M7 2C5.89 2 5 2.9 5 4v16c0 1.1.89 2 2 2h10c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2H7zM7 20V4h10v16H7z"/></svg>
+      <svg width="100" height="100" viewBox="0 0 24 24">
+        <defs>
+          <marker id="arrowhead" markerWidth="6" markerHeight="4" refX="0" refY="2" orient="auto">
+            <path d="M0,0 L0,4 L6,2 z" fill="#333"/>
+          </marker>
+        </defs>
+        <g fill="none" stroke="#333" stroke-width="1.5">
+          <rect x="7" y="2" width="10" height="20" rx="1" ry="1"/>
+          <line x1="2" y1="12" x2="22" y2="12" marker-end="url(#arrowhead)"/>
+        </g>
+      </svg>
     </div>
     <p>Please rotate your phone to landscape mode</p>
   </div>
@@ -87,9 +120,12 @@
       if(window.innerHeight > window.innerWidth) {
            document.getElementById('rotate-notice').style.display = 'flex';
            toggleMainContent(false);
+           document.body.style.height = '100vh';
       } else {
            document.getElementById('rotate-notice').style.display = 'none';
            toggleMainContent(true);
+           document.body.style.height = '100vh';
+           setTimeout(function(){ window.scrollTo(0,1); }, 100);
       }
   }
 
