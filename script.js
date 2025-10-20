@@ -1355,11 +1355,7 @@ function onCanvasClick(event) {
     introStarted = true;
     fadeInProgress = true;
     document.body.classList.add("intro-started");
-    
-    // Phát nhạc YouTube khi click vào hành tinh
-    if (window.player && typeof window.player.playVideo === 'function') {
-      window.player.playVideo();
-    }
+    playGalaxyAudio();
 
     startCameraAnimation();
 

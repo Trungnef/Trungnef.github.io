@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Galaxy Love</title>
+  <title>Galaxy with Love</title>
   <link rel="stylesheet" href="style.css" />
   <script type="importmap">
     {
@@ -69,7 +69,8 @@
         width: '0',
         videoId: 'E7Aif6vPMhU',
         playerVars: {
-          autoplay: 0, // Để là 0, chúng ta sẽ điều khiển bằng API
+          autoplay: 1,
+          mute: 0, // Mute by default to comply with browser autoplay policies
           start: startTime,
           end: endTime,
           controls: 0,
@@ -77,28 +78,15 @@
           playlist: 'E7Aif6vPMhU'
         },
         events: {
-          onReady: (event) => {
+          onReady: () => {
             const btn = document.getElementById('musicButton');
             btn.disabled = false;
-            btn.innerText = "🎵";
-            
-            // Cố gắng phát nhạc tự động
-            event.target.playVideo();
-
-            // Sau một khoảng trễ ngắn, kiểm tra xem nhạc có thực sự đang phát không
-            setTimeout(() => {
-              if (player.getPlayerState() !== YT.PlayerState.PLAYING) {
-                // Nếu không, có thể do trình duyệt chặn, hãy hiện nút
-                btn.style.display = 'block';
-              }
-            }, 1000);
+            btn.innerText = "💖";
+            player.playVideo(); // Auto start playing
           },
           onStateChange: (event) => {
             if (event.data === YT.PlayerState.ENDED) {
-              player.seekTo(startTime); // Quay lại thời điểm bắt đầu khi hết đoạn
-            } else if (event.data === YT.PlayerState.PLAYING) {
-              // Khi nhạc bắt đầu phát (dù là tự động hay do người dùng click), ẩn nút đi
-              document.getElementById('musicButton').style.display = 'none';
+              player.seekTo(90);
             }
           }
         }
@@ -107,7 +95,13 @@
 
     document.getElementById('musicButton').addEventListener('click', () => {
       if (player) {
-        player.playVideo();
+        if (player.isMuted()) {
+          player.unMute();
+          document.getElementById('musicButton').innerText = "💖";
+        } else {
+          player.mute();
+          document.getElementById('musicButton').innerText = "😣";
+        }
       }
     });
   </script>
