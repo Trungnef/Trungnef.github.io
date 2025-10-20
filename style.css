@@ -30,26 +30,19 @@ canvas {
 
 /* Cảnh báo landscape phong cách vũ trụ */
 #landscape-warning {
-  position: fixed;
-  z-index: 99999;
+  /* position: fixed;
+  z-index: 9999;
   top: 0; left: 0; right: 0; bottom: 0;
-  height: calc(var(--vh, 1vh) * 100);
+  background: radial-gradient(ellipse at center, #1a237e 0%, #000 100%);
+  color: #fff;
   display: flex;
   justify-content: center;
   align-items: center;
   text-align: center;
-  background: radial-gradient(ellipse at center, #07102a 0%, rgba(0,0,0,0.95) 100%);
-  color: #fff;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.45s ease, transform 0.45s ease;
-  transform: translateY(6%);
-}
-body.landscape-warning-active #landscape-warning,
-body.portrait #landscape-warning {
-  opacity: 1;
-  pointer-events: auto;
-  transform: translateY(0);
+  transition: opacity 0.7s cubic-bezier(.4,2,.6,1); */
+  display: none !important;
 }
 /* body.landscape-warning-active #landscape-warning,
 body.portrait #landscape-warning {
@@ -223,32 +216,17 @@ body:not(.landscape-warning-active) #container canvas {
 }
 
 .rotate-icon {
-  width: 84px;
-  height: 84px;
+  width: 56px;
+  height: 56px;
   margin: 0 auto 18px auto;
-  background: url('data:image/svg+xml;utf8,<svg width="84" height="84" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="12" y="16" width="32" height="24" rx="6" fill="%23fff" stroke="%2300eaff" stroke-width="2"/><path d="M28 8v4" stroke="%2300eaff" stroke-width="2" stroke-linecap="round"/><path d="M28 44v4" stroke="%2300eaff" stroke-width="2" stroke-linecap="round"/><path d="M8 28h4" stroke="%2300eaff" stroke-width="2" stroke-linecap="round"/><path d="M44 28h4" stroke="%2300eaff" stroke-width="2" stroke-linecap="round"/><path d="M18 38l-4 4" stroke="%23a259f7" stroke-width="2" stroke-linecap="round"/><path d="M38 38l4 4" stroke="%23a259f7" stroke-width="2" stroke-linecap="round"/><path d="M18 18l-4-4" stroke="%23a259f7" stroke-width="2" stroke-linecap="round"/><path d="M38 18l4-4" stroke="%23a259f7" stroke-width="2" stroke-linecap="round"/></svg>') center/contain no-repeat;
-  transform-style: preserve-3d;
-  will-change: transform, opacity;
-  animation: rotate-phone-3d 1.6s infinite cubic-bezier(.2,.8,.2,1);
+  background: url('data:image/svg+xml;utf8,<svg width="56" height="56" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="12" y="16" width="32" height="24" rx="6" fill="%23fff" stroke="%2300eaff" stroke-width="2"/><path d="M28 8v4" stroke="%2300eaff" stroke-width="2" stroke-linecap="round"/><path d="M28 44v4" stroke="%2300eaff" stroke-width="2" stroke-linecap="round"/><path d="M8 28h4" stroke="%2300eaff" stroke-width="2" stroke-linecap="round"/><path d="M44 28h4" stroke="%2300eaff" stroke-width="2" stroke-linecap="round"/><path d="M18 38l-4 4" stroke="%23a259f7" stroke-width="2" stroke-linecap="round"/><path d="M38 38l4 4" stroke="%23a259f7" stroke-width="2" stroke-linecap="round"/><path d="M18 18l-4-4" stroke="%23a259f7" stroke-width="2" stroke-linecap="round"/><path d="M38 18l4-4" stroke="%23a259f7" stroke-width="2" stroke-linecap="round"/></svg>') center/contain no-repeat;
+  animation: rotate-phone 1.6s infinite cubic-bezier(.4,2,.6,1);
 }
 @keyframes rotate-phone {
-  0% { transform: perspective(600px) rotateY(-28deg) rotateX(6deg); opacity:0.92 }
-  25% { transform: perspective(600px) rotateY(24deg) rotateX(-6deg); opacity:1 }
-  50% { transform: perspective(600px) rotateY(-18deg) rotateX(0deg); opacity:0.98 }
-  75% { transform: perspective(600px) rotateY(18deg) rotateX(4deg); opacity:1 }
-  100% { transform: perspective(600px) rotateY(-28deg) rotateX(6deg); opacity:0.92 }
-}
-
-@media (max-width: 720px) {
-  #landscape-warning .warning-content {
-    width: 92vw;
-    padding: 1.5rem;
-    border-radius: 16px;
-  }
-  .rotate-icon {
-    width: 72px;
-    height: 72px;
-  }
+  0% { transform: rotate(-18deg); }
+  20% { transform: rotate(18deg); }
+  40% { transform: rotate(-18deg); }
+  100% { transform: rotate(-18deg); }
 }
 html, body {
   width: 100vw;

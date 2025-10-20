@@ -1052,27 +1052,6 @@ function animate() {
   requestAnimationFrame(animate);
   const time = performance.now() * 0.001;
 
-  // If the user is on a mobile device in portrait, do a lightweight loop that
-  // updates only what's necessary for the overlay (keep it smooth but avoid heavy GPU work).
-  const isPortrait = document.body.classList.contains("portrait");
-  if (isPortrait) {
-    // still animate the hint icon so the rotate animation is smooth
-    animateHintIcon(time);
-    // update camera & controls minimally
-    controls.update();
-    // ensure renderer size matches the small viewport variables
-    const w = window.innerWidth;
-    const h = window.innerHeight;
-    if (renderer.domElement.width !== w || renderer.domElement.height !== h) {
-      renderer.setSize(w, h);
-      camera.aspect = w / h;
-      camera.updateProjectionMatrix();
-    }
-    // render a single frame so overlay is visible
-    renderer.render(scene, camera);
-    return; // skip heavy updates while portrait
-  }
-
   animateHintIcon(time);
 
   controls.update();
@@ -1236,7 +1215,7 @@ function createHintText() {
   canvas.width = canvas.height = canvasSize;
   const context = canvas.getContext("2d");
   const fontSize = 50;
-  const text = "Anh yêu em, Tran Ngoc ❤";
+  const text = "Anh yêu Trần Ngọc";
   context.font = `bold ${fontSize}px Arial, sans-serif`;
   context.textAlign = "center";
   context.textBaseline = "middle";
@@ -1421,37 +1400,87 @@ if (container) {
   container.addEventListener("touchmove", preventDefault, { passive: false });
 }
 
-function checkOrientation() {
-  const isTouch = "ontouchstart" in window || navigator.maxTouchPoints > 0;
-  const isMobilePortrait = isTouch && window.innerHeight > window.innerWidth;
+// --- Mobile Orientation Check and 3D Phone Animation ---
 
-  if (isMobilePortrait) {
-    document.body.classList.add("portrait");
-    document.body.classList.remove("intro-started");
-    // Pause heavy updates visually by adding a flag
-    window.__isPortraitPaused = true;
-  } else {
-    document.body.classList.remove("portrait");
-    window.__isPortraitPaused = false;
-  }
+let phoneScene, phoneCamera, phoneRenderer, phoneMesh;
+
+function initPhoneAnimation() {
+    const animationContainer = document.getElementById('phone-animation');
+    if (!animationContainer) return;
+
+    // Scene
+    phoneScene = new THREE.Scene();
+
+    // Camera
+    phoneCamera = new THREE.PerspectiveCamera(50, animationContainer.clientWidth / animationContainer.clientHeight, 0.1, 100);
+    phoneCamera.position.z = 10;
+
+    // Renderer
+    phoneRenderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+    phoneRenderer.setSize(animationContainer.clientWidth, animationContainer.clientHeight);
+    phoneRenderer.setPixelRatio(window.devicePixelRatio);
+    animationContainer.appendChild(phoneRenderer.domElement);
+
+    // Phone Model
+    const phoneGroup = new THREE.Group();
+    const caseGeometry = new THREE.BoxGeometry(3, 6, 0.4);
+    const caseMaterial = new THREE.MeshStandardMaterial({ color: 0x333333, roughness: 0.3 });
+    const phoneCase = new THREE.Mesh(caseGeometry, caseMaterial);
+    
+    const screenGeometry = new THREE.BoxGeometry(2.7, 5.7, 0.1);
+    const screenMaterial = new THREE.MeshStandardMaterial({ color: 0x000000, roughness: 0.1, metalness: 0.5 });
+    const phoneScreen = new THREE.Mesh(screenGeometry, screenMaterial);
+    phoneScreen.position.z = 0.21;
+
+    phoneGroup.add(phoneCase);
+    phoneGroup.add(phoneScreen);
+    
+    phoneMesh = phoneGroup;
+    phoneScene.add(phoneMesh);
+
+    // Light
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+    phoneScene.add(ambientLight);
+    const pointLight = new THREE.PointLight(0xffffff, 0.8);
+    pointLight.position.set(5, 10, 10);
+    phoneScene.add(pointLight);
+
+    animatePhone();
 }
 
-// Attach handler for Enter Fullscreen button (if present)
-document.addEventListener("DOMContentLoaded", () => {
-  const fsBtn = document.getElementById("enterFullscreen");
-  if (fsBtn) {
-    fsBtn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      // Try to request fullscreen and then scroll to hide address bar
-      requestFullScreen();
-      setTimeout(() => {
-        try {
-          window.scrollTo(0, 1);
-        } catch (err) {}
-      }, 600);
-    });
+function animatePhone() {
+    if (!phoneRenderer) return;
+    requestAnimationFrame(animatePhone);
+
+    const time = performance.now() * 0.0005;
+    const rotation = (Math.sin(time) + 1) / 2; // from 0 to 1
+    phoneMesh.rotation.z = rotation * (Math.PI / 2); // Rotate from 0 to 90 degrees
+
+    phoneRenderer.render(phoneScene, phoneCamera);
+}
+
+
+function checkOrientation() {
+  const isMobile = /Mobi|Android/i.test(navigator.userAgent);
+  if (!isMobile) {
+    document.body.classList.remove("portrait-mode");
+    return;
   }
-});
+
+  const isPortrait = window.innerHeight > window.innerWidth;
+
+  if (isPortrait) {
+    document.body.classList.add("portrait-mode");
+    if (!phoneRenderer) {
+        // Initialize animation only when needed
+        setTimeout(initPhoneAnimation, 100);
+    }
+  } else {
+    document.body.classList.remove("portrait-mode");
+    // Request fullscreen when switching to landscape
+    requestFullScreen();
+  }
+}
 
 window.addEventListener("DOMContentLoaded", checkOrientation);
 window.addEventListener("resize", checkOrientation);
