@@ -90,7 +90,7 @@ const galaxyParameters = {
 };
 
 const defaultHeartImages = Array.from(
-  { length: 2 },
+  { length: 4 },
   (_, i) => `images/img${i + 1}.jpg`
 );
 
@@ -414,6 +414,87 @@ for (let group = 0; group < numGroups; group++) {
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
 scene.add(ambientLight);
 
+// -------------------------
+// Distant planets (background) - added to enrich galaxy when zoomed out
+// -------------------------
+const distantPlanets = [];
+const distantPlanetGroup = new THREE.Group();
+scene.add(distantPlanetGroup);
+
+function createDistantPlanets(options = {}) {
+  const {
+    count = 120,
+    minDistance = 200,
+    maxDistance = 1200,
+    minRadius = 1.5,
+    maxRadius = 16,
+  } = options;
+
+  const palette = [
+    0xffc1e3, // pink
+    0xa29bfe, // lavender
+    0x8ee7d7, // mint
+    0xffdd88, // warm yellow
+    0xff9fa3, // coral
+    0x9ad0ff, // sky
+    0xd9b3ff, // lilac
+    0xc7f7e5, // pale aqua
+  ];
+
+  for (let i = 0; i < count; i++) {
+    const radius = minRadius + Math.random() * (maxRadius - minRadius);
+    // Use low poly sphere (fewer segments) for performance
+    const geometry = new THREE.SphereGeometry(radius, 10, 10);
+
+    // random color from palette with slight variation
+    const baseColor = new THREE.Color(
+      palette[Math.floor(Math.random() * palette.length)]
+    );
+    // tint variation
+    baseColor.offsetHSL((Math.random() - 0.5) * 0.08, (Math.random() - 0.5) * 0.12, (Math.random() - 0.5) * 0.12);
+
+    // simple shader-like material to give subtle rim (MeshStandardMaterial is heavier; use MeshPhong for balance)
+    const material = new THREE.MeshPhongMaterial({
+      color: baseColor,
+      shininess: 10 + Math.random() * 30,
+      flatShading: true,
+    });
+
+    const planetMesh = new THREE.Mesh(geometry, material);
+
+    // place on spherical shell between minDistance and maxDistance
+    const distance = minDistance + Math.random() * (maxDistance - minDistance);
+    const theta = Math.acos(2 * Math.random() - 1);
+    const phi = Math.random() * Math.PI * 2;
+    const x = Math.sin(theta) * Math.cos(phi) * distance;
+    const y = Math.sin(theta) * Math.sin(phi) * distance * (0.5 + Math.random() * 1.0); // a bit flattened vertically
+    const z = Math.cos(theta) * distance;
+
+    planetMesh.position.set(x, y, z);
+
+    // random rotation
+    planetMesh.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI);
+
+    // store metadata for gentle orbiting
+    planetMesh.userData = {
+      orbitRadius: distance,
+      orbitSpeed: 0.0001 + Math.random() * 0.0009,
+      orbitPhase: Math.random() * Math.PI * 2,
+      rotationSpeed: 0.0005 + Math.random() * 0.004,
+      baseScale: radius,
+    };
+
+    // subtle emissive for distant glow
+    if (Math.random() < 0.25) planetMesh.material.emissive = baseColor.clone().multiplyScalar(0.05 + Math.random() * 0.15);
+
+    distantPlanetGroup.add(planetMesh);
+    distantPlanets.push(planetMesh);
+  }
+}
+
+// create the distant planets with default parameters
+createDistantPlanets({ count: 140, minDistance: 220, maxDistance: 1400, minRadius: 1.2, maxRadius: 18 });
+
 const starCount = 20000;
 const starGeometry = new THREE.BufferGeometry();
 const starPositions = new Float32Array(starCount * 3);
@@ -438,48 +519,6 @@ const starField = new THREE.Points(starGeometry, starMaterial);
 starField.name = "starfield";
 starField.renderOrder = 999;
 scene.add(starField);
-
-// =================================================================
-// TẠO CÁC HÀNH TINH NHỎ Ở XA
-// =================================================================
-const distantPlanets = new THREE.Group();
-
-function createDistantPlanet() {
-  // Kích thước ngẫu nhiên
-  const size = 0.5 + Math.random() * 2;
-  const geometry = new THREE.SphereGeometry(size, 16, 16);
-
-  // Màu sắc ngẫu nhiên
-  const color = new THREE.Color();
-  color.setHSL(Math.random(), 0.7, 0.5 + Math.random() * 0.2);
-  const material = new THREE.MeshBasicMaterial({ color: color });
-
-  const planet = new THREE.Mesh(geometry, material);
-
-  // Vị trí ngẫu nhiên ở khoảng cách xa
-  const distance = 250 + Math.random() * 750; // Khoảng cách từ 250 đến 1000
-  const angle = Math.random() * Math.PI * 2;
-  // Phân bố ngẫu nhiên theo chiều dọc
-  const height = (Math.random() - 0.5) * 500;
-
-  planet.position.set(
-    Math.cos(angle) * distance,
-    height,
-    Math.sin(angle) * distance
-  );
-  
-  // Lưu lại màu gốc để làm hiệu ứng lấp lánh
-  planet.userData.originalColor = color.clone();
-
-  return planet;
-}
-
-const numDistantPlanets = 150;
-for (let i = 0; i < numDistantPlanets; i++) {
-  distantPlanets.add(createDistantPlanet());
-}
-scene.add(distantPlanets);
-// =================================================================
 
 let shootingStars = [];
 
@@ -1094,13 +1133,6 @@ function animate() {
   requestAnimationFrame(animate);
   const time = performance.now() * 0.001;
 
-  // Thêm hiệu ứng lấp lánh cho các hành tinh ở xa
-  distantPlanets.children.forEach(planet => {
-    const pulse = Math.sin(time * (0.5 + Math.random()) + planet.id); // Tần số ngẫu nhiên cho mỗi hành tinh
-    const brightness = 0.7 + (pulse + 1) * 0.15; // Thay đổi độ sáng từ 0.7 đến 1.0
-    planet.material.color.copy(planet.userData.originalColor).multiplyScalar(brightness);
-  });
-
   animateHintIcon(time);
 
   controls.update();
@@ -1247,6 +1279,46 @@ function animate() {
   planet.lookAt(camera.position);
   animatePlanetSystem();
 
+  // Update distant planets: gentle orbit, rotation, and LOD (visibility/scale)
+  if (distantPlanets && distantPlanets.length) {
+    const camDist = camera.position.length();
+    for (let p of distantPlanets) {
+      const ud = p.userData;
+      // orbit around center
+      ud.orbitPhase += ud.orbitSpeed * (1 + camDist * 0.0002);
+      const phi = ud.orbitPhase;
+      // keep original radius direction but rotate around Y
+      const r = ud.orbitRadius;
+      const baseDir = new THREE.Vector3().copy(p.position).normalize();
+      // compute new position on orbit circle in local horizontal plane
+      const angle = phi;
+      const orbitX = Math.cos(angle) * r;
+      const orbitZ = Math.sin(angle) * r;
+      // preserve y sign and scale to keep vertical distribution
+      const ySign = Math.sign(p.position.y) || 1;
+      p.position.set(orbitX, baseDir.y * r * 0.6, orbitZ);
+
+      // rotate slowly
+      p.rotation.y += ud.rotationSpeed * (1 + camDist * 0.0001);
+
+      // LOD: scale and visibility based on camera distance
+      const distanceToCamera = p.position.distanceTo(camera.position);
+      // when camera is far, make them visible and small; when close, hide to avoid clutter
+      if (distanceToCamera < 80) {
+        // very close -> hide
+        p.visible = false;
+      } else if (distanceToCamera < 220) {
+        p.visible = false;
+      } else {
+        p.visible = true;
+      }
+
+      // scale subtly by distance to create parallax impression
+      const s = ud.baseScale * THREE.MathUtils.clamp(1.0 - (camDist - 100) / 2000, 0.4, 1.6);
+      p.scale.setScalar(s);
+    }
+  }
+
   if (
     starField &&
     starField.material &&
@@ -1264,7 +1336,7 @@ function createHintText() {
   canvas.width = canvas.height = canvasSize;
   const context = canvas.getContext("2d");
   const fontSize = 50;
-  const text = "Happy Girlfriend Day!";
+  const text = "Anh yêu Trần Nguyễn Khánh Ngọc rất nhiều!";
   context.font = `bold ${fontSize}px Arial, sans-serif`;
   context.textAlign = "center";
   context.textBaseline = "middle";
