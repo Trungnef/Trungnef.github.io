@@ -1,4 +1,4 @@
-export const PLACEHOLDER_WEBSITE = "https://your-portfolio-domain.com";
+export const PLACEHOLDER_WEBSITE = "https://trungnef.github.io/";
 
 export const PROFILE = {
   name: "Bui The Trung",
