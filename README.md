@@ -1,27 +1,42 @@
+# Portfolio V5
 
+This repository contains the portfolio website for **Bui The Trung**.
 
-<h1 align="center">🌌 Galaxy-Love 💫</h1>
-<p align="center">
-  <i>A cosmic journey that blends stardust & code — explore, interact, and fall in love with the galaxy.</i>
-</p>
+## Profile Summary
 
-<p align="center">
-  <a href="https://trungnef.github.io/"><img src="https://img.shields.io/badge/🌐%20Live%20Demo-Visit%20Now-blue?style=for-the-badge"></a>
-  <a href="https://github.com/Trungnef/Trungnef.github.io/stargazers"><img src="https://img.shields.io/github/stars/Trungnef/Trungnef.github.io?color=ff69b4&style=for-the-badge"></a>
-  <a href="https://github.com/Trungnef/Trungnef.github.io/issues"><img src="https://img.shields.io/github/issues/Trungnef/Trungnef.github.io?color=yellow&style=for-the-badge"></a>
-  <a href="https://github.com/Trungnef/Trungnef.github.io"><img src="https://img.shields.io/github/license/Trungnef/Trungnef.github.io?color=green&style=for-the-badge"></a>
-</p>
+- Name: Bui The Trung
+- Role: AI Engineer
+- Email: trune.naee@gmail.com
+- LinkedIn: https://www.linkedin.com/in/trune-nae-606128399/
+- GitHub: https://github.com/Trungnef
+- Portfolio Website: https://your-portfolio-domain.com (placeholder)
 
----
+## Project Notes
 
-## 📦 Installation
+- The public profile content has been updated to match the attached CV.
+- Old owner information has been removed from the app and metadata.
+- Missing website/domain fields currently use placeholders so they can be updated later.
+- The CV file is available at `public/CV_Bui_The_Trung_UK.pdf`.
+
+## Current Sections
+
+- Home
+- About
+- Profile Highlights
+- Contact
+- Admin dashboard pages kept from the original project structure
+
+## Tech Stack
+
+- React
+- Vite
+- Tailwind CSS
+- Supabase
+- Material UI
+
+## Local Development
+
 ```bash
-# Clone this repository
-git clone https://github.com/Trungnef/Trungnef.github.io.git
-
-# Navigate into the project
-cd Trungnef.github.io
-
-# Open in browser
-start index.html   # Windows
-open index.html    # Mac
+npm install
+npm run dev
+```
