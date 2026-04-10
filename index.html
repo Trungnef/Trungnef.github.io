@@ -3,6 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script>
+    (function () {
+      const redirect = sessionStorage.getItem("spa-redirect");
+      if (!redirect) return;
+
+      sessionStorage.removeItem("spa-redirect");
+      const target = JSON.parse(redirect);
+      window.history.replaceState(null, "", target);
+    })();
+  </script>
   <link rel="icon" type="image/png" href="/Photo.jpg" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -32,26 +42,26 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://your-portfolio-domain.com/" />
+  <meta property="og:url" content="https://trungnef.github.io/" />
   <meta property="og:title" content="Bui The Trung | AI Engineer" />
   <meta property="og:description" content="AI Engineer focused on NLP, LLM fine-tuning, reasoning research, and practical machine learning systems." />
-  <meta property="og:image" content="https://your-portfolio-domain.com/Meta.png" />
+  <meta property="og:image" content="https://trungnef.github.io/Meta.png" />
 
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:url" content="https://your-portfolio-domain.com/" />
+  <meta name="twitter:url" content="https://trungnef.github.io/" />
   <meta name="twitter:title" content="Bui The Trung | AI Engineer" />
   <meta name="twitter:description" content="AI Engineer focused on NLP, LLM fine-tuning, reasoning research, and practical machine learning systems." />
-  <meta name="twitter:image" content="https://your-portfolio-domain.com/Meta.png" />
+  <meta name="twitter:image" content="https://trungnef.github.io/Meta.png" />
 
-  <link rel="canonical" href="https://your-portfolio-domain.com/" />
+  <link rel="canonical" href="https://trungnef.github.io/" />
 
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "Person",
     "name": "Bui The Trung",
-    "url": "https://your-portfolio-domain.com",
-    "image": "https://your-portfolio-domain.com/Photo.jpg",
+    "url": "https://trungnef.github.io",
+    "image": "https://trungnef.github.io/Photo.jpg",
     "jobTitle": "AI Engineer",
     "description": "AI Engineer focused on NLP, LLM fine-tuning, reasoning research, RAG workflows, and practical machine learning systems.",
     "sameAs": [
