@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+ï»¿import React, { useEffect, useState } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { Award, BookOpen, Briefcase, Code2 } from "lucide-react";
@@ -54,7 +54,7 @@ export default function ProfileHighlights() {
             >
               <SectionCard
                 title={item.project}
-                subtitle={`${item.role} · ${item.company} · ${item.location}`}
+                subtitle={`${item.role} Â· ${item.company} Â· ${item.location}`}
                 meta={item.period}
                 items={item.highlights}
               />
@@ -75,7 +75,7 @@ export default function ProfileHighlights() {
             >
               <SectionCard
                 title={item.title}
-                subtitle={`${item.type} · ${item.organization} · ${item.location}`}
+                subtitle={`${item.type} Â· ${item.organization} Â· ${item.location}`}
                 meta={item.period}
                 items={item.highlights}
               />
@@ -86,7 +86,7 @@ export default function ProfileHighlights() {
               <SectionCard
                 title={item.title}
                 subtitle={item.authors}
-                meta={`${item.year} · ${item.venue}`}
+                meta={`${item.year} Â· ${item.venue}`}
                 items={item.highlights}
               />
             </div>
@@ -136,9 +136,9 @@ export default function ProfileHighlights() {
           >
             <SectionCard
               title={item.title}
-              subtitle="Core capability"
+              subtitle={item.subtitle || "Core capability"}
               meta="Technical Skill"
-              items={[item.description]}
+              items={item.items || [item.description]}
             />
           </div>
         ))}
@@ -153,8 +153,8 @@ export default function ProfileHighlights() {
           Profile Highlights
         </h2>
         <p className="text-slate-400 max-w-3xl mx-auto text-sm md:text-base mt-2">
-          This section replaces the old project showcase with experience, research,
-          awards, and skills taken directly from the attached CV.
+          CV-aligned experience, research, awards, and technical skills with the latest
+          Aimesoft work now reflected in the portfolio.
         </p>
       </div>
 
@@ -189,3 +189,4 @@ export default function ProfileHighlights() {
     </div>
   );
 }
+

@@ -1,4 +1,4 @@
-import React, { useEffect, memo, useMemo } from "react";
+﻿import React, { useEffect, memo, useMemo } from "react";
 import {
   FileText,
   Code,
@@ -288,7 +288,7 @@ const AboutPage = () => {
             animation="fade-right"
             lines={[
               `${EXPERIENCE_ITEMS[0].role} - ${EXPERIENCE_ITEMS[0].company}`,
-              EXPERIENCE_ITEMS[0].project,
+              "Selected work: NTTEA, Linebot Meisei, Rakuyaku, QA Assist, and AimeDoc",
               EXPERIENCE_ITEMS[0].period,
             ]}
           />
@@ -326,3 +326,4 @@ const AboutPage = () => {
 };
 
 export default memo(AboutPage);
+

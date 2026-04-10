@@ -7,29 +7,29 @@ export const PROFILE = {
   jobTitle: "AI Engineer",
   heroTitle: ["AI", "Engineer"],
   typingWords: [
-    "NLP and LLM Engineer",
-    "Applied Machine Learning Builder",
-    "Research-Driven Problem Solver",
+    "LLM Applications and RAG Engineer",
+    "Document Intelligence Builder",
+    "Research-Driven AI Product Engineer",
   ],
-  heroTechStack: ["Python", "PyTorch", "Hugging Face", "Dify", "AWS"],
+  heroTechStack: ["Python", "PyTorch", "Hugging Face", "RAG", "Docker", "AWS"],
   email: "trune.naee@gmail.com",
   phoneDisplay: "(+84) 373 104 304",
   phoneHref: "tel:+84373104304",
   github: "https://github.com/Trungnef",
   linkedin: "https://www.linkedin.com/in/trune-nae-606128399/",
   siteUrl: PLACEHOLDER_WEBSITE,
-  siteLabel: "your-portfolio-domain.com",
+  siteLabel: "trungnef.github.io",
   cvPath: "/CV_Bui_The_Trung_UK.pdf",
   avatar: "/Photo.jpg",
   ogImage: `${PLACEHOLDER_WEBSITE}/Meta.png`,
   location: "Duong Quang Ham, Quan Hoa, Cau Giay, Hanoi, Vietnam",
   summary:
-    "AI Engineer with a strong foundation in computer science, natural language processing, and applied machine learning. Focused on turning research into practical systems that improve workflows and solve real-world problems.",
+    "AI Engineer with hands-on experience building LLM applications, RAG systems, and document intelligence solutions. Strong in NLP, machine learning, fine-tuning, evaluation, and turning research ideas into practical products.",
   about:
-    "Driven and innovative AI Engineer with hands-on experience in NLP, LLM evaluation, fine-tuning, reasoning research, and AI workflow design. Comfortable working across experimentation, implementation, and deployment while keeping the work grounded in measurable outcomes.",
+    "Driven AI Engineer with hands-on experience across LLM fine-tuning, conversational AI, document QA, proposal generation workflows, and applied research. Comfortable working from experimentation to backend implementation and product-facing AI features while keeping the work grounded in measurable utility.",
   quote: "Leveraging AI as a professional tool, not a replacement.",
   seoDescription:
-    "Bui The Trung is an AI Engineer focused on NLP, LLM fine-tuning, reasoning research, RAG workflows, and practical machine learning systems.",
+    "Bui The Trung is an AI Engineer focused on LLM applications, RAG systems, document intelligence, fine-tuning, and practical AI product development.",
   primaryLinkUrl: "https://github.com/Trungnef",
   primaryLinkLabel: "github.com/Trungnef",
 };
@@ -69,18 +69,66 @@ export const EDUCATION = {
 export const EXPERIENCE_ITEMS = [
   {
     role: "AI Engineer",
-    company: "Aimesoft Company",
+    company: "Aimesoft",
     location: "Hanoi, Vietnam",
     period: "December 2025 - Present",
     project: "NTTEA - Japanese Administrative Text Generation",
     highlights: [
-      "Developed data and fine-tuning workflows for Japanese administrative writing (Bunko) based on around 120 official rules.",
-      "Fine-tuned Tsuzumi-28B to generate compliant administrative documents from bullet-point inputs.",
+      "Built data preparation and fine-tuning workflows for Japanese administrative writing based on approximately 120 official rules.",
+      "Fine-tuned Tsuzumi-28B to generate compliant administrative documents from bullet-point inputs and rewrite informal text into formal administrative style.",
       "Supported model evaluation using MT-Bench and JGLUE benchmarks.",
     ],
   },
   {
-    role: "Student Research",
+    role: "AI Engineer",
+    company: "Aimesoft",
+    location: "Hanoi, Vietnam",
+    period: "December 2025 - Present",
+    project: "Linebot Meisei - LINE Mini App Ordering Bot",
+    highlights: [
+      "Developed backend and product features for a LINE-based ordering bot integrated with a mini-app workflow.",
+      "Contributed to conversational flow design, order handling logic, and AI-assisted user interaction for product ordering.",
+      "Worked on product-facing chatbot behavior that supported smoother order capture and response flow.",
+    ],
+  },
+  {
+    role: "AI Engineer",
+    company: "Aimesoft",
+    location: "Hanoi, Vietnam",
+    period: "December 2025 - Present",
+    project: "Rakuyaku - QC Check / Consistency Check Tool",
+    highlights: [
+      "Built AI backend services for document consistency checking across one or more PDF files.",
+      "Applied RAG to enable semantic retrieval and automated question answering over complex PDF documents.",
+      "Designed backend logic supporting consistency verification workflows for document quality control.",
+    ],
+  },
+  {
+    role: "AI Engineer",
+    company: "Aimesoft",
+    location: "Hanoi, Vietnam",
+    period: "December 2025 - Present",
+    project: "RAG (QA Assist)",
+    highlights: [
+      "Developed a RAG-based QA assistant service that manages documents, chat history, and conversational context for grounded question answering.",
+      "Implemented context orchestration for a generative AI API-based system and improved retrieval flow for more relevant responses.",
+      "Focused on backend service behavior for multi-document question answering and context-aware response generation.",
+    ],
+  },
+  {
+    role: "AI Engineer",
+    company: "Aimesoft",
+    location: "Hanoi, Vietnam",
+    period: "December 2025 - Present",
+    project: "AimeDoc - Proposal Generation System",
+    highlights: [
+      "Contributed to an internal product that generates PowerPoint proposal decks from requirement documents, specifications, and reference materials.",
+      "Supported document ingestion, content structuring, and generation workflows to reduce manual proposal drafting effort.",
+      "Worked on turning scattered requirement inputs into more structured proposal-generation pipelines.",
+    ],
+  },
+  {
+    role: "Machine Learning Engineer",
     company: "DataCom Corp",
     location: "Japan",
     period: "March 2025 - May 2025",
@@ -197,29 +245,40 @@ export const CERTIFICATIONS = [
 
 export const SKILL_CATEGORIES = [
   {
-    title: "Natural Language Processing",
-    description:
-      "Experience with text preprocessing, prompt design, and evaluation for NLP tasks.",
+    title: "Programming & AI",
+    subtitle: "Core technical foundation",
+    items: [
+      "Python for AI prototyping, backend logic, and experimentation.",
+      "Machine Learning and Deep Learning for practical product and research workflows.",
+      "Natural Language Processing, LLM fine-tuning, prompt engineering, and RAG.",
+    ],
   },
   {
-    title: "Python / Machine Learning / Deep Learning",
-    description:
-      "Hands-on experience using Python with PyTorch and Hugging Face for fine-tuning and evaluating language models.",
+    title: "Frameworks & Libraries",
+    subtitle: "Primary model and workflow stack",
+    items: [
+      "PyTorch for model training and experimentation.",
+      "Hugging Face ecosystem for fine-tuning and evaluation pipelines.",
+      "Dify for building and orchestrating LLM workflows.",
+    ],
   },
   {
-    title: "LLM Frameworks and Workflows",
-    description:
-      "Experience integrating LLMs into chatbot and RAG workflows using Dify.",
+    title: "Tools & Platforms",
+    subtitle: "Delivery and experimentation tools",
+    items: [
+      "Git for version control and collaboration.",
+      "Docker for packaging and deployment workflows.",
+      "Jupyter Notebook and AWS for experimentation and cloud-based work.",
+    ],
   },
   {
-    title: "Data Analysis and Visualization",
-    description:
-      "Hands-on data analysis and result inspection for model evaluation and experiments.",
-  },
-  {
-    title: "Tools and Platforms",
-    description:
-      "Jupyter Notebook, Git, Hugging Face ecosystem, AWS, Dify, and Docker.",
+    title: "Evaluation & Data",
+    subtitle: "Measurement and retrieval-oriented work",
+    items: [
+      "Model evaluation, benchmark-oriented analysis, and experiment workflows.",
+      "Semantic search and document question answering over complex files.",
+      "Data analysis for retrieval quality, reasoning behavior, and system usefulness.",
+    ],
   },
 ];
 
