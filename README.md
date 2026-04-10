@@ -9,8 +9,7 @@ This repository contains the portfolio website for **Bui The Trung**.
 - Email: trune.naee@gmail.com
 - LinkedIn: https://www.linkedin.com/in/trune-nae-606128399/
 - GitHub: https://github.com/Trungnef
-- Portfolio Website: https://your-portfolio-domain.com (placeholder)
-
+- Portfolio Website: https://trungnef.github.io/
 ## Project Notes
 
 - The public profile content has been updated to match the attached CV.
