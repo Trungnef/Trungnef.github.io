@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Routes, Route, Link, Navigate, useLocation, useNavigate } from 'react-router-dom'
-import { supabase } from '../supabase'
+import { hasSupabaseEnv, supabase } from '../supabase'
 import Projects from './dashboard/Projects'
 import Certificates from './dashboard/Certificates'
 import Comments from './dashboard/Comments'
@@ -18,6 +18,10 @@ export default function Dashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   const handleLogout = async () => {
+    if (!hasSupabaseEnv || !supabase) {
+      navigate('/login')
+      return
+    }
     await supabase.auth.signOut()
     navigate('/login')
   }

@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useRef, useCallback, memo } from 'react';
-import { createClient } from '@supabase/supabase-js';
 import { MessageCircle, UserCircle2, Loader2, AlertCircle, Send, ImagePlus, X, Pin } from 'lucide-react';
 import AOS from "aos";
 import "aos/dist/aos.css";
-import { supabase } from '../supabase';
+import { hasSupabaseEnv, supabase } from '../supabase';
 
 
 const Comment = memo(({ comment, formatDate, index, isPinned = false }) => (
@@ -241,6 +240,11 @@ const Komentar = () => {
 
     // Fetch pinned comment
     useEffect(() => {
+        if (!hasSupabaseEnv || !supabase) {
+            setError('Comments are temporarily unavailable because Supabase is not configured for this deployment.');
+            return;
+        }
+
         const fetchPinnedComment = async () => {
             try {
                 const { data, error } = await supabase
@@ -267,6 +271,10 @@ const Komentar = () => {
 
     // Fetch regular comments (excluding pinned) and set up real-time subscription
     useEffect(() => {
+        if (!hasSupabaseEnv || !supabase) {
+            return;
+        }
+
         const fetchComments = async () => {
             const { data, error } = await supabase
                 .from('portfolio_comments')
@@ -306,6 +314,10 @@ const Komentar = () => {
     }, []);
 
     const uploadImage = useCallback(async (imageFile) => {
+        if (!hasSupabaseEnv || !supabase) {
+            throw new Error('Supabase is not configured.');
+        }
+
         if (!imageFile) return null;
         
         const fileExt = imageFile.name.split('.').pop();
@@ -328,6 +340,11 @@ const Komentar = () => {
     }, []);
 
     const handleCommentSubmit = useCallback(async ({ newComment, userName, imageFile }) => {
+        if (!hasSupabaseEnv || !supabase) {
+            setError('Comments are temporarily unavailable because Supabase is not configured for this deployment.');
+            return;
+        }
+
         setError('');
         setIsSubmitting(true);
         

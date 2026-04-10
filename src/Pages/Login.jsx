@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { supabase } from "../supabase";
+import { hasSupabaseEnv, supabase } from "../supabase";
 import { useNavigate } from 'react-router-dom'
 import { Mail, Lock, LogIn, Sparkles, Eye, EyeOff } from 'lucide-react'
 
@@ -12,6 +12,10 @@ export default function Login() {
 
   const handleLogin = async (e) => {
     e.preventDefault()
+    if (!hasSupabaseEnv || !supabase) {
+      alert('Supabase env is missing. Configure GitHub Actions secrets or your local .env first.')
+      return
+    }
     setLoading(true)
     const { data, error } = await supabase.auth.signInWithPassword({ email, password })
     if (error) { alert(error.message); setLoading(false); return }
@@ -43,6 +47,11 @@ export default function Login() {
               </div>
               <h1 className="text-3xl font-bold text-white">Welcome Back</h1>
               <p className="text-gray-400 text-sm">Sign in to manage your portfolio</p>
+              {!hasSupabaseEnv && (
+                <p className="text-amber-300 text-xs">
+                  Supabase is not configured for this build. Admin login is disabled.
+                </p>
+              )}
             </div>
 
             {/* Form */}
@@ -57,6 +66,7 @@ export default function Login() {
                     value={email}
                     onChange={e => setEmail(e.target.value)}
                     required
+                    disabled={!hasSupabaseEnv || loading}
                     className="w-full bg-transparent px-3 py-3 text-gray-100 placeholder-gray-500 text-sm outline-none"
                   />
                 </div>
@@ -72,6 +82,7 @@ export default function Login() {
                     value={password}
                     onChange={e => setPassword(e.target.value)}
                     required
+                    disabled={!hasSupabaseEnv || loading}
                     className="w-full bg-transparent px-3 py-3 text-gray-100 placeholder-gray-500 text-sm outline-none"
                   />
                   <button
@@ -88,7 +99,7 @@ export default function Login() {
                 </div>
               </div>
 
-              <button type="submit" disabled={loading} className="relative group/btn w-full mt-1">
+              <button type="submit" disabled={loading || !hasSupabaseEnv} className="relative group/btn w-full mt-1">
                 <div className="absolute -inset-0.5 bg-gradient-to-r from-[#4f52c9] to-[#8644c5] rounded-xl opacity-70 blur group-hover/btn:opacity-100 transition duration-300" />
                 <div className="relative h-11 bg-[#030014] rounded-xl border border-white/10 flex items-center justify-center gap-2 overflow-hidden">
                   <div className="absolute inset-0 scale-x-0 group-hover/btn:scale-x-100 origin-left transition-transform duration-500 bg-gradient-to-r from-[#4f52c9]/20 to-[#8644c5]/20" />
