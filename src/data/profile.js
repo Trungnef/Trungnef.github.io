@@ -250,7 +250,7 @@ export const SOCIAL_LINKS = [
   },
   {
     name: "Portfolio Website",
-    label: "Placeholder - update later",
+    label: "website",
     value: PROFILE.siteLabel,
     url: PROFILE.siteUrl,
   },
