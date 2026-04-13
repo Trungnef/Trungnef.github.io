@@ -19,7 +19,7 @@ export const PROFILE = {
   linkedin: "https://www.linkedin.com/in/trune-nae-606128399/",
   siteUrl: PLACEHOLDER_WEBSITE,
   siteLabel: "trungnef.github.io",
-  cvPath: "/CV_Bui_The_Trung_UK.pdf",
+  cvPath: "/CV_Master_Bui_The_Trung.pdf",
   avatar: "/Photo.jpg",
   ogImage: `${PLACEHOLDER_WEBSITE}/Meta.png`,
   location: "Duong Quang Ham, Quan Hoa, Cau Giay, Hanoi, Vietnam",
