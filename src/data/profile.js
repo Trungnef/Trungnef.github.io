@@ -11,7 +11,7 @@ export const PROFILE = {
     "Document Intelligence Builder",
     "Research-Driven AI Product Engineer",
   ],
-  heroTechStack: ["Python", "PyTorch", "Hugging Face", "RAG", "Docker", "AWS"],
+  heroTechStack: ["Python", "PyTorch", "Hugging Face", "RAG", "n8n", "Azure"],
   email: "trune.naee@gmail.com",
   phoneDisplay: "(+84) 373 104 304",
   phoneHref: "tel:+84373104304",
@@ -47,7 +47,7 @@ export const PROFILE_STATS = [
   },
   {
     label: "Publication",
-    value: "FJCAI",
+    value: "STDJ",
     description: "2026 publication on Vietnamese SLM reasoning",
   },
 ];
@@ -69,7 +69,7 @@ export const EDUCATION = {
 export const EXPERIENCE_ITEMS = [
   {
     role: "AI Engineer",
-    company: "Aimesoft",
+    company: "Aimesoft Company",
     location: "Hanoi, Vietnam",
     period: "December 2025 - Present",
     project: "NTTEA - Japanese Administrative Text Generation",
@@ -81,7 +81,7 @@ export const EXPERIENCE_ITEMS = [
   },
   {
     role: "AI Engineer",
-    company: "Aimesoft",
+    company: "Aimesoft Company",
     location: "Hanoi, Vietnam",
     period: "December 2025 - Present",
     project: "Linebot Meisei - LINE Mini App Ordering Bot",
@@ -93,7 +93,7 @@ export const EXPERIENCE_ITEMS = [
   },
   {
     role: "AI Engineer",
-    company: "Aimesoft",
+    company: "Aimesoft Company",
     location: "Hanoi, Vietnam",
     period: "December 2025 - Present",
     project: "Rakuyaku - QC Check / Consistency Check Tool",
@@ -105,7 +105,7 @@ export const EXPERIENCE_ITEMS = [
   },
   {
     role: "AI Engineer",
-    company: "Aimesoft",
+    company: "Aimesoft Company",
     location: "Hanoi, Vietnam",
     period: "December 2025 - Present",
     project: "RAG (QA Assist)",
@@ -117,7 +117,7 @@ export const EXPERIENCE_ITEMS = [
   },
   {
     role: "AI Engineer",
-    company: "Aimesoft",
+    company: "Aimesoft Company",
     location: "Hanoi, Vietnam",
     period: "December 2025 - Present",
     project: "AimeDoc - Proposal Generation System",
@@ -128,7 +128,7 @@ export const EXPERIENCE_ITEMS = [
     ],
   },
   {
-    role: "Machine Learning Engineer",
+    role: "AI Engineer",
     company: "DataCom Corp",
     location: "Japan",
     period: "March 2025 - May 2025",
@@ -173,7 +173,7 @@ export const RESEARCH_ITEMS = [
 export const PUBLICATIONS = [
   {
     year: "2026",
-    venue: "FJCAI",
+    venue: "STDJ",
     title:
       "Bridging the Reasoning Gap in Vietnamese with Small Language Models via Test-Time Scaling",
     authors:
@@ -236,11 +236,6 @@ export const CERTIFICATIONS = [
     issuer: "IELTS",
     period: "2025",
   },
-  {
-    title: "JLPT N4",
-    issuer: "Japanese Language Proficiency Test",
-    period: "2024",
-  },
 ];
 
 export const SKILL_CATEGORIES = [
@@ -259,7 +254,7 @@ export const SKILL_CATEGORIES = [
     items: [
       "PyTorch for model training and experimentation.",
       "Hugging Face ecosystem for fine-tuning and evaluation pipelines.",
-      "Dify for building and orchestrating LLM workflows.",
+      "n8n and Dify for building and orchestrating LLM workflows.",
     ],
   },
   {
@@ -268,7 +263,7 @@ export const SKILL_CATEGORIES = [
     items: [
       "Git for version control and collaboration.",
       "Docker for packaging and deployment workflows.",
-      "Jupyter Notebook and AWS for experimentation and cloud-based work.",
+      "Jupyter Notebook, Azure, and AWS for experimentation and cloud-based work.",
     ],
   },
   {
